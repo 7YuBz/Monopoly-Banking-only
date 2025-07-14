@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Bank - ธนาคารควบคุม</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-info">
+                <h1>Monopoly Bank - ธนาคารควบคุม</h1>
+                <span id="bankIdentifier" style="display: none;">ผู้ควบคุม: <span id="bankId"></span></span>
+            </div>
+            <div class="header-actions">
+                <button id="themeToggleBtn" title="สลับโหมดธีม"><i class="material-icons">brightness_4</i></button>
+                <button id="logoutBtn" style="display: none;" title="ออกจากระบบ"><i class="material-icons">logout</i></button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section id="authSection" class="auth-section">
+                <div class="auth-card">
+                    <h2>เข้าสู่ระบบผู้ควบคุมธนาคาร</h2>
+                    <div class="input-group">
+                        <label for="emailInput">อีเมล</label>
+                        <input type="email" id="emailInput" placeholder="กรอกอีเมลธนาคาร" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="passwordInput">รหัสผ่าน</label>
+                        <input type="password" id="passwordInput" placeholder="กรอกรหัสผ่านธนาคาร" required>
+                    </div>
+                    <div class="auth-buttons">
+                        <button id="loginBtn" class="primary-button">เข้าสู่ระบบ</button>
+                        <button id="registerBtn" class="secondary-button">ลงทะเบียน (สำหรับผู้ดูแล)</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bankControlSection" class="game-section" style="display: none;">
+                <div class="balance-card" style="background-color: var(--success-color);">
+                    <h3>สถานะธนาคาร</h3>
+                    <p>ควบคุมการเงินผู้เล่น</p>
+                </div>
+
+                <div class="bank-dashboard-layout">
+                    <div class="bank-controls-panel">
+                        <h2>ควบคุมเงินผู้เล่น</h2>
+                        <div class="input-group">
+                            <label for="bankPlayerSelect">เลือกผู้เล่น</label>
+                            <select id="bankPlayerSelect" required></select>
+                        </div>
+                        <div class="input-group">
+                            <label for="bankAmount">จำนวนเงิน</label>
+                            <input type="text" id="bankAmount" placeholder="เช่น 100000 หรือ 100K" required>
+                        </div>
+                        <div class="bank-buttons">
+                            <button id="bankToPlayerBtn" class="success-button"><i class="material-icons">add</i> ธนาคารจ่ายให้ผู้เล่น</button>
+                            <button id="playerToBankBtn" class="warning-button"><i class="material-icons">remove</i> ผู้เล่นจ่ายให้ธนาคาร</button>
+                        </div>
+                        <div class="card-buttons" style="margin-top: var(--spacing-md); display: flex; flex-direction: column; gap: var(--spacing-md);">
+                            <button id="drawTreasureCardBtn" class="info-button"><i class="material-icons">redeem</i> สุ่มการ์ดสมบัติ</button>
+                            <button id="drawWhatCardBtn" class="accent-button"><i class="material-icons">help_outline</i> สุ่มการ์ดอะไรเอ่ย</button>
+                        </div>
+                    </div>
+
+                    <div class="all-players-display">
+                        <h2>ผู้เล่นทั้งหมด</h2>
+                        <div id="playerList" class="player-list-grid">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="game-controls">
+                    <button id="historyBtn" class="info-button"><i class="material-icons">history</i> ประวัติธุรกรรม</button>
+                    <button id="undoBtn" class="danger-button"><i class="material-icons">undo</i> ย้อนกลับล่าสุด</button>
+                    <button id="resetGameBtn" class="warning-button"><i class="material-icons">restart_alt</i> รีเซ็ตเกมทั้งหมด</button>
+                </div>
+            </section>
+
+            <section id="historySection" class="history-section" style="display: none;">
+                <div class="section-header">
+                    <h2>ประวัติการทำรายการ (ธนาคาร)</h2>
+                    <button id="backToBankControlBtn" class="secondary-button"><i class="material-icons">arrow_back</i> ย้อนกลับ</button>
+                </div>
+                <div id="transactionHistory" class="transaction-history">
+                    <p class="no-transactions-message">ยังไม่มีการทำรายการ</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="bank-script.js"></script>
+</body>
+</html>
